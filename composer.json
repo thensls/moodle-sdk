@@ -1,0 +1,8 @@
+{
+    "name": "nsls/moodlesdk",
+    "description": "Interface to make api calls and sql queries to Moodle",
+    "type": "library",
+    "require": {
+        "symfony/http-client": "^5.0"
+    }
+}
