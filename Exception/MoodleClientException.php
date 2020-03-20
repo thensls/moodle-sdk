@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Nsls\Library\Moodle\Exception;
+namespace Nsls\Moodle\Exception;
 
 
 class MoodleClientException extends \Exception
