@@ -42,17 +42,17 @@ $moodle = Nsls\Moodle\Factory::instantiate();
 #### Using an implemented Rest endpoint:
 
 ```php
-$groups = $moodle->courses()->all();
+$courses = $moodle->courses()->all();
 
 // Get the full repsonse as an array
-print $groups->toArray();
+print $courses->toArray();
 
 // Or original Json
-print $groups->getContent();
+print $courses->getContent();
 
 // Or get the actual response and use any symfony/httpclient method
 // https://symfony.com/doc/current/components/http_client.html#processing-responses
-$response = $groups->getResponse();
+$response = $courses->getResponse();
 ```
 
 *Note:* You can prevent any error handling on responses by passing false parameter
@@ -60,6 +60,26 @@ $response = $groups->getResponse();
 print $groups->toArray(false);
 print $groups->getContent(false);
 ```
+
+#### Using an implemented Rest query endpoint:
+A special group of endpoints are they query endpoints. These are part of the custom Moodle plugin "local_nslsqt", and allow for SQL SELECT queries.
+```php
+// Get the first 10 enrolled users in a course.
+$sql = "SELECT DISTINCT u.id, u.username, u.firstname, u.lastname
+  FROM {user} u
+  JOIN {user_enrolments} ue ON (ue.userid = u.id)
+  JOIN {enrol} e ON (e.id = ue.enrolid AND e.courseid = :courseid)";
+
+$params = [
+  [
+      'param' => 'courseid',
+      'value' => 4,
+  ]
+];
+$query = $client->query()->getRecords($sql, $params, 0, 10);
+print $query->toArray();
+```
+*Note:* These are read-only queries, for UPDATE and DELETE statements please use the standard REST endpoints. 
 
 #### Using an non-implemented Rest endpoint
 

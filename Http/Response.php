@@ -44,6 +44,7 @@ class Response implements ResponseInterface
                 )
             );
         }
+        $this->processNestedJson($content);
         return $content;
     }
 
@@ -85,6 +86,20 @@ class Response implements ResponseInterface
     public function getInfo(string $type = null)
     {
        return $this->response->getInfo();
+    }
+
+    /**
+     *
+     * @param $content
+     */
+    private function processNestedJson(&$content) {
+        $decodedResponse = json_decode($content, true);
+        foreach ($decodedResponse as $key => $item) {
+            if (array_key_exists('data', $item) && array_key_exists('post_process_nested_json', $item) && $item['post_process_nested_json']) {
+                $decodedResponse[$key] = json_decode($item['data']);
+            }
+        }
+        $content = json_encode($decodedResponse);
     }
 
 }

@@ -5,6 +5,7 @@ namespace Nsls\Moodle;
 use Nsls\Moodle\Http\Client;
 use Nsls\Moodle\Rest\Courses;
 use Nsls\Moodle\Rest\Groups;
+use Nsls\Moodle\Rest\Query;
 use Nsls\Moodle\Rest\Rest;
 
 /**
@@ -12,6 +13,7 @@ use Nsls\Moodle\Rest\Rest;
  *
  * @method Courses    courses()
  * @method Groups     groups()
+ * @method Query      query()
  *
  * @package Nsls\Moodle
  */
