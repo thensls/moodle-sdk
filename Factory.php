@@ -4,16 +4,20 @@ namespace Nsls\Moodle;
 
 use Nsls\Moodle\Http\Client;
 use Nsls\Moodle\Rest\Courses;
+use Nsls\Moodle\Rest\Enrollments;
 use Nsls\Moodle\Rest\Groups;
+use Nsls\Moodle\Rest\Users;
 use Nsls\Moodle\Rest\Query;
 use Nsls\Moodle\Rest\Rest;
 
 /**
  * Class Factory
  *
- * @method Courses    courses()
- * @method Groups     groups()
- * @method Query      query()
+ * @method Courses      courses()
+ * @method Enrollments  enrollments()
+ * @method Groups       groups()
+ * @method Users        users()
+ * @method Query        query()
  *
  * @package Nsls\Moodle
  */
