@@ -23,10 +23,14 @@ class Enrollments extends Rest
     public function enrollUserInCourse(int $userId, int $courseId, int $roleid): ?Response
     {
         return $this->client->request('enrol_manual_enrol_users', [
-            'userid' => $userId,
-            'courseid' => $courseId,
-            'roleid' => $roleid,
-            'timestart' => REQUEST_TIME,
+            'enrolments' => [
+                [
+                    'userid' => $userId,
+                    'courseid' => $courseId,
+                    'roleid' => $roleid,
+                    'timestart' => time(),
+                ],
+            ],
         ]);
     }
 

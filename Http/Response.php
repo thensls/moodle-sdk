@@ -4,6 +4,11 @@
 namespace Nsls\Moodle\Http;
 
 use Nsls\Moodle\Exception\MoodleClientException;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class Response implements ResponseInterface
@@ -49,11 +54,23 @@ class Response implements ResponseInterface
     }
 
     /**
-     * @inheritDoc
+     * @param bool $throw
+     * @return array
+     * @throws MoodleClientException
      */
     public function toArray(bool $throw = true): array
     {
-        return json_decode($this->getContent($throw), true);
+        try {
+            return json_decode($this->getContent($throw), true) ?: [];
+        } catch (ClientExceptionInterface $e) {
+            throw new MoodleClientException($e->getMessage(), $e->getCode(), $e);
+        } catch (RedirectionExceptionInterface $e) {
+            throw new MoodleClientException($e->getMessage(), $e->getCode(), $e);
+        } catch (ServerExceptionInterface $e) {
+            throw new MoodleClientException($e->getMessage(), $e->getCode(), $e);
+        } catch (TransportExceptionInterface $e) {
+            throw new MoodleClientException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 
     /**
@@ -89,17 +106,24 @@ class Response implements ResponseInterface
     }
 
     /**
+     * Process Nested json.
      *
      * @param $content
      */
-    private function processNestedJson(&$content) {
+    private function processNestedJson(&$content): void
+    {
         $decodedResponse = json_decode($content, true);
-        foreach ($decodedResponse as $key => $item) {
-            if (array_key_exists('data', $item) && array_key_exists('post_process_nested_json', $item) && $item['post_process_nested_json']) {
-                $decodedResponse[$key] = json_decode($item['data']);
+        if (is_array($decodedResponse)) {
+            foreach ($decodedResponse as $key => $item) {
+                if (array_key_exists('data', $item) && array_key_exists(
+                        'post_process_nested_json',
+                        $item
+                    ) && $item['post_process_nested_json']) {
+                    $decodedResponse[$key] = json_decode($item['data']);
+                }
             }
+            $content = json_encode($decodedResponse);
         }
-        $content = json_encode($decodedResponse);
     }
 
 }
