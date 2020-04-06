@@ -7,13 +7,42 @@ use Nsls\Moodle\Http\Response;
 
 class Groups extends Rest
 {
+
+    /**
+     * Create single group.
+     *
+     * @param array $group
+     *   Group.
+     *
+     * @return Response|null
+     * @throws MoodleClientException
+     */
+    public function create(array $group): ?Response
+    {
+        return $this->createMultiple([$group]);
+    }
+
+    /**
+     * Create groups.
+     *
+     * @param array $groups
+     *   Groups.
+     *
+     * @return Response|null
+     * @throws MoodleClientException
+     */
+    public function createMultiple(array $groups): ?Response
+    {
+        return $this->client->request('core_group_create_groups', ['groups' => $groups]);
+    }
+
     /**
      * Get the groups in a Course.
      *
      * @param int $course
+     *   Course ID.
      *
      * @throws MoodleClientException
-     *
      * @return Response|null
      */
     public function getGroupsInCourse(int $course): ?Response
@@ -28,6 +57,7 @@ class Groups extends Rest
      *   User ID.
      * @param int $courseId
      *   Course ID.
+     *
      * @return Response|null
      * @throws MoodleClientException
      */
@@ -40,6 +70,7 @@ class Groups extends Rest
      * Add users to a group.
      *
      * @param array $users
+     *   Users.
      *
      * @return Response|null
      * @throws MoodleClientException
