@@ -80,4 +80,17 @@ class Groups extends Rest
         return $this->client->request('core_group_add_group_members', ['members' => $users]);
     }
 
+    /**
+     * Removes users from a group.
+     *
+     * @param array $users
+     *   Users.
+     *
+     * @return Response|null
+     * @throws MoodleClientException
+     */
+    public function removeUsersFromGroup(array $users): ?Response
+    {
+        return $this->client->request('core_group_delete_group_members', ['members' => $users]);
+    }
 }
